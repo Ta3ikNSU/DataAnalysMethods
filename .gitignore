@@ -1,0 +1,13 @@
+Leiningen.gitignore
+clojure-intellij-plugin.iws
+out
+dist
+jflex.log
+lib/*SDK
+*~
+doc
+.nrepl-port
+CHANGELOG.md
+.DS_Store
+target
+LICENSE
