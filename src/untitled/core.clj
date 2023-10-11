@@ -86,3 +86,23 @@
   (if (empty? alphabet)
     `()
     (reduce (fn [acc _] (if (empty? acc) alphabet (concat-alphabet-to-all-words-recur-reduce-enabled acc alphabet))) [] (range 0 length)))) ; reverse не нужен, так как игнорируем элемент коллекции
+
+; ----------------------------------------------------------------------------
+; #2.1
+(defn trapezoid [f a b]
+  (* (* (+ (f a) (f b)) (- b a)) 0.5))
+
+; a,b - границы левая и правая соответственно
+; h - длина шага
+(defn integral [f a b h]
+  (if (< a b)
+    (+ (trapezoid f a (+ a h)) (integral f (+ a h) b h))
+    0))
+
+(defn area-mem [f1 f2 h]
+  (* (* (+ f1 f2) h) 0.5))
+
+(def trapezoid-mem (memoize (fn [f a b] (area-mem (f a) (f b) (- b a)))))
+(defn integral-mem [f a b h]
+  (if (< a b)
+    (+ (trapezoid-mem f a (+ a h)) (integral-mem f (+ a h) b h)) 0))
