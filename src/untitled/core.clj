@@ -65,15 +65,12 @@
 ; ----------------------------------------------------------------------------
 ; #1.3
 
-(defn my-map [func coll]
-  (reverse
-    (reduce
-      (fn
-        [acc elem]
-        (cons (func elem) acc))
-      (list)
-      coll)))
+(defn my-map
+  [f coll]
+  (reverse (reduce (fn [acc x] (conj acc (f x))) '() coll)))
 
-
+(defn my-filter
+  [pred coll]
+  (reverse (reduce (fn [acc x] (if (pred x) (conj acc x) acc)) '() coll)))
 ; ----------------------------------------------------------------------------
 ; #1.4
