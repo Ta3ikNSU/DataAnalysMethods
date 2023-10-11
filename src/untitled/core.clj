@@ -1,12 +1,70 @@
 (ns untitled.core)
 
-(defn foo1
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
-
-; memorize
 ; ----------------------------------------------------------------------------
+; #1.1
+(defn append-char-if-not-last
+  [word symbol]
+  (if (= (str (last word)) symbol)
+    nil
+    (str word symbol)))
+
+(defn concat-symbol-from-alphabet-to-word                        ; в конец слова (базы) допихиваем все слова из алфавита
+  [base alphabet result]
+  (if (empty? alphabet)
+    result
+    (let [new-word (append-char-if-not-last base (first alphabet))
+          new-seq (rest alphabet)]
+      (if (nil? new-word)
+        (concat-symbol-from-alphabet-to-word base new-seq result)
+        (concat-symbol-from-alphabet-to-word base new-seq (into result (list new-word)))))))
+
+(defn concat-alphabet-to-all-words
+  [result alphabet current-word]
+  (if (empty? result)
+    current-word
+    (concat-alphabet-to-all-words (rest result) alphabet (into current-word (concat-symbol-from-alphabet-to-word (first result) alphabet []))))) ; перебираем все элементы из текущей свалки слов
+
+(defn generate-sequences
+  [result alphabet length]
+  (if (empty? alphabet)
+    `()
+    (if (empty? result)
+      (generate-sequences alphabet alphabet length)         ; первые буквы для всех слов
+      (if (= (count (first result)) length)                 ; если первое слово имеет нужную длину -> все слова тоже
+        result
+        (generate-sequences (concat-alphabet-to-all-words result alphabet []) alphabet length)))))
+
+; ----------------------------------------------------------------------------
+; #1.2
+(defn concat-symbol-from-alphabet-to-word-recur
+  [base alphabet result]
+  (if (empty? alphabet)
+    result
+    (let [new-word (append-char-if-not-last base (first alphabet))
+          new-seq (rest alphabet)]
+      (if (nil? new-word)
+        (recur base new-seq result)
+        (recur base new-seq (into result (list new-word)))))))
+
+(defn concat-alphabet-to-all-words-recur
+  [result alphabet current-word]
+  (if (empty? result)
+    current-word
+    (concat-alphabet-to-all-words-recur (rest result) alphabet (into current-word (concat-symbol-from-alphabet-to-word-recur (first result) alphabet [])))))
+
+(defn generate-sequences-recur
+  [result alphabet length]
+  (if (empty? alphabet)
+    `()
+    (if (empty? result)
+      (recur alphabet alphabet length)
+      (if (= (count (first result)) length)
+        result
+        (recur (concat-alphabet-to-all-words-recur result alphabet []) alphabet length)))))
+
+; ----------------------------------------------------------------------------
+; #1.3
+
 (defn my-map [func coll]
   (reverse
     (reduce
@@ -16,42 +74,6 @@
       (list)
       coll)))
 
-(defn remove-element-helper [my-vector element-to-remove index]
-  (if (= 0 index)
-    []
-    (if (= (nth my-vector (dec index)) element-to-remove)
-      (remove-element-helper my-vector element-to-remove (- index 1))
-      (conj (remove-element-helper my-vector element-to-remove (- index 1)) (nth my-vector (dec index)))
-      )
-    )
-  )
 
-(defn remove-element [my-vector element-to-remove]
-  (remove-element-helper my-vector element-to-remove (count my-vector)))
-
-(defn generate-string [array n answers current need-length]
-  (if (= (count current) need-length)
-    (conj answers current)
-    (if (= n -1)
-      answers
-      (let [new-list-without-element (remove-element array (nth array n))]
-        (concat
-          (generate-string new-list-without-element (- (count new-list-without-element) 1) answers (str current (nth array n)) need-length)
-          (generate-string array (- n 1) answers current need-length)
-          )
-        )
-      )
-    )
-  )
-
-(defn main-1-1
-  [& args]
-  (let [n (last args)]
-    (let [alphabet (butlast args)]
-      (if (> n (count alphabet))
-        (throw (Exception. "n больше размера алфавита")))
-        (generate-string alphabet (- (count alphabet) 1) [] "" n)
-      )
-    )
-  )
 ; ----------------------------------------------------------------------------
+; #1.4
