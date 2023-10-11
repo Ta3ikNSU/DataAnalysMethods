@@ -22,6 +22,7 @@
     (is (= (ta3ik/generate-sequences [] ["a" "b" "c"] 3) ["aba" "abc" "aca" "acb" "bab" "bac" "bca" "bcb" "cab" "cac" "cba" "cbc"]))
     (is (= (ta3ik/generate-sequences [] ["1" "2" "3"] 1) ["1" "2" "3"]))))
 
+
 (deftest test-concat-symbol-from-alphabet-to-word-recur
   (testing "concat-symbol-from-alphabet-to-word-recur should concatenate symbols from the alphabet to the base word"
     (is (= (ta3ik/concat-symbol-from-alphabet-to-word-recur "base" ["a" "b" "c"] []) ["basea" "baseb" "basec"]))
@@ -35,6 +36,7 @@
     (is (= (ta3ik/generate-sequences-recur [] ["a" "b" "c"] 2) ["ab" "ac" "ba" "bc" "ca" "cb"]))
     (is (= (ta3ik/generate-sequences-recur [] ["a" "b" "c"] 3) ["aba" "abc" "aca" "acb" "bab" "bac" "bca" "bcb" "cab" "cac" "cba" "cbc"]))
     (is (= (ta3ik/generate-sequences-recur [] ["1" "2" "3"] 1) ["1" "2" "3"]))))
+
 
 (deftest test-my-map
   (testing "my-map should map a function to each element in the collection"
@@ -51,4 +53,19 @@
     (is (= (ta3ik/my-filter #(> % 2) '(1 2 3 4 5)) '(3 4 5)))
     (is (= (ta3ik/my-filter #(<= % 3) '(1 2 3 4 5)) '(1 2 3)))
     (is (= (ta3ik/my-filter #(= % 0) '()) '()))))
+
+
+(deftest test-concat-symbol-from-alphabet-to-word-recur
+  (testing "concat-symbol-from-alphabet-to-word-recur should concatenate symbols from the alphabet to the base word"
+    (is (= (ta3ik/concat-symbol-from-alphabet-to-word-recur-reduce-enabled "base" ["a" "b" "c"]) ["basea" "baseb" "basec"]))
+    (is (= (ta3ik/concat-symbol-from-alphabet-to-word-recur-reduce-enabled "word" ["x" "y" "z"]) ["wordx" "wordy" "wordz"]))
+    (is (= (ta3ik/concat-symbol-from-alphabet-to-word-recur-reduce-enabled "test" ["1" "2" "3"]) ["test1" "test2" "test3"]))
+    (is (= (ta3ik/concat-symbol-from-alphabet-to-word-recur-reduce-enabled "" ["x" "y" "z"]) ["x" "y" "z"]))
+    (is (= (ta3ik/concat-symbol-from-alphabet-to-word-recur-reduce-enabled "" []) []))))
+
+(deftest test-generate-sequences-recur
+  (testing "generate-sequences-recur should generate sequences of specified length using the alphabet"
+    (is (= (ta3ik/generate-sequences-recur-reduce-enabled ["a" "b" "c"] 2) ["ab" "ac" "ba" "bc" "ca" "cb"]))
+    (is (= (ta3ik/generate-sequences-recur-reduce-enabled ["a" "b" "c"] 3) ["aba" "abc" "aca" "acb" "bab" "bac" "bca" "bcb" "cab" "cac" "cba" "cbc"]))
+    (is (= (ta3ik/generate-sequences-recur-reduce-enabled ["1" "2" "3"] 1) ["1" "2" "3"]))))
 
