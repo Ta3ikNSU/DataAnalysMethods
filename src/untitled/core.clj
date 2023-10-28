@@ -50,7 +50,7 @@
   [result alphabet current-word]
   (if (empty? result)
     current-word
-    (concat-alphabet-to-all-words-recur (rest result) alphabet (into current-word (concat-symbol-from-alphabet-to-word-recur (first result) alphabet [])))))
+    (recur (rest result) alphabet (into current-word (concat-symbol-from-alphabet-to-word-recur (first result) alphabet [])))))
 
 (defn generate-sequences-recur
   [result alphabet length]

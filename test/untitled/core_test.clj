@@ -40,6 +40,7 @@
 
 (deftest test-my-map
   (testing "my-map should map a function to each element in the collection"
+    (is (= (ta3ik/my-map inc [1 2 3 4 5]) '(2 3 4 5 6)))
     (is (= (ta3ik/my-map inc '(1 2 3 4 5)) '(2 3 4 5 6)))
     (is (= (ta3ik/my-map str '(a b c d e)) '("a" "b" "c" "d" "e")))
     (is (= (ta3ik/my-map (fn [x] (* x x)) '(1 2 3 4 5)) '(1 4 9 16 25)))
