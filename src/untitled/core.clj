@@ -8,7 +8,7 @@
     nil
     (str word symbol)))
 
-(defn concat-symbol-from-alphabet-to-word                        ; в конец слова (базы) допихиваем все слова из алфавита
+(defn concat-symbol-from-alphabet-to-word                   ; в конец слова (базы) допихиваем все слова из алфавита
   [base alphabet result]
   (if (empty? alphabet)
     result
@@ -89,20 +89,45 @@
 
 ; ----------------------------------------------------------------------------
 ; #2.1
+
 (defn trapezoid [f a b]
   (* (* (+ (f a) (f b)) (- b a)) 0.5))
 
+; 3x^6+38x^5+27x^4-14x^3-19x^2+39x-5
+(defn polynomial [x]
+  (+ (* 3 (Math/pow x 6))
+     (* 38 (Math/pow x 5))
+     (* 27 (Math/pow x 4))
+     (* -14 (Math/pow x 3))
+     (* -19 (Math/pow x 2))
+     (* 39 x)
+     -5))
+
 ; a,b - границы левая и правая соответственно
 ; h - длина шага
-(defn integral [f a b h]
-  (if (< a b)
-    (+ (trapezoid f a (+ a h)) (integral f (+ a h) b h))
-    0))
+(defn integral
+  ([f a b h]
+   (if (< a b)
+     (+
+       (trapezoid f (- b h) b)
+       (integral f a (- b h) h))
+     0))
 
-(defn area-mem [f1 f2 h]
-  (* (* (+ f1 f2) h) 0.5))
+  ([f b h]
+   (integral f 0 b h))
+  )
+(def m-integral
+  (memoize
+    (fn [f a b h]
+      (if (< a b)
+        (+
+          (trapezoid f (- b h) b)
+          (m-integral f a (- b h) h))
+        0)))
+  )
 
-(def trapezoid-mem (memoize (fn [f a b] (area-mem (f a) (f b) (- b a)))))
-(defn integral-mem [f a b h]
-  (if (< a b)
-    (+ (trapezoid-mem f a (+ a h)) (integral-mem f (+ a h) b h)) 0))
+(defn -main [& args]
+  (time (m-integral polynomial -50 50 0.05))
+  (time (m-integral polynomial -50 50 0.05))
+  (time (m-integral polynomial -50 60 0.05))
+  )
