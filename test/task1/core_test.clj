@@ -1,6 +1,6 @@
-(ns untitled.core-test
+(ns task1.core-test
   (:require [clojure.test :refer :all]
-            [untitled.core :refer :all :as ta3ik]))
+            [task1.core :refer :all :as ta3ik]))
 
 (deftest test-append-char-if-not-last
   (testing "append-char-if-not-last should append a character if it's not the last character of the word"
@@ -69,26 +69,3 @@
     (is (= (ta3ik/generate-sequences-recur-reduce-enabled ["a" "b" "c"] 2) ["ab" "ac" "ba" "bc" "ca" "cb"]))
     (is (= (ta3ik/generate-sequences-recur-reduce-enabled ["a" "b" "c"] 3) ["aba" "abc" "aca" "acb" "bab" "bac" "bca" "bcb" "cab" "cac" "cba" "cbc"]))
     (is (= (ta3ik/generate-sequences-recur-reduce-enabled ["1" "2" "3"] 1) ["1" "2" "3"]))))
-
-(deftest trapezoid-test
-  (testing "Testing trapezoid function"
-    (is (= (trapezoid (fn [x] x) 0 2) 2.0))
-    (is (= (trapezoid (fn [x] (* x x)) 0 1) 0.5))
-    (is (= (trapezoid (fn [x] (* x x)) 1 2) 2.5))))
-
-(deftest integral-test
-  (testing "Testing integral function"
-    (is (= (integral (fn [x] x) -10 10 5) 0.0))
-    (is (= (integral (fn [x] (* x x)) -10 0 10) 500.0))
-    (is (= (integral (fn [x] (* x x)) 0 10 10) 500.0))
-    (is (< (/ (integral polynomial -5 5 0.005) 99080.95) (* 0.01 99080.95))) ; погрешность менее процента
-    ))
-
-(deftest integral-mem-test
-  (testing "Testing integral function"
-    (is (= (m-integral (fn [x] x) -10 10 5) 0.0))
-    (is (= (m-integral (fn [x] (* x x)) -10 0 10) 500.0))
-    (is (= (m-integral (fn [x] (* x x)) 0 10 10) 500.0))
-
-    (is (< (/ (m-integral polynomial -5 5 0.005) 99080.95) (* 0.01 99080.95)))
-    ))
