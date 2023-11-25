@@ -23,3 +23,11 @@
 
     (is (< (/ (m-integral polynomial -5 5 0.005) 99080.95) (* 0.01 99080.95)))
     ))
+
+(deftest integral-mem-test
+  (testing "Интеграл на iterate"
+    (is (= (lazy-integral-iterate (fn [x] x) 10 5) 0.0))
+    (is (= (lazy-integral-iterate (fn [x] (* x x)) 10 10) 500.0))
+
+    (is (< (/ (lazy-integral-iterate polynomial 5 0.005) 146798.8) (* 0.01 146798.8)))
+    ))
