@@ -79,10 +79,22 @@
 
 (defn concat-alphabet-to-all-words-recur-reduce-enabled
   [result alphabet]
-  (reverse (reduce #(into %1 (concat-symbol-from-alphabet-to-word-recur-reduce-enabled %2 alphabet)) `() result)))
+  (reverse (reduce
+             #(into %1 (concat-symbol-from-alphabet-to-word-recur-reduce-enabled %2 alphabet))
+             `()
+             result)))
 
 (defn generate-sequences-recur-reduce-enabled
   [alphabet length]
   (if (empty? alphabet)
     `()
-    (reduce (fn [acc _] (if (empty? acc) alphabet (concat-alphabet-to-all-words-recur-reduce-enabled acc alphabet))) [] (range 0 length)))) ; reverse не нужен, так как игнорируем элемент коллекции
+    (reduce
+      (fn [acc _]
+        (if (empty? acc)
+          alphabet
+          (concat-alphabet-to-all-words-recur-reduce-enabled acc alphabet)))
+      []
+      (range 0 length))))
+
+(defn -main [& args]
+  (println (generate-sequences-recur-reduce-enabled ["a", "b", "c"] 3)))
