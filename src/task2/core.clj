@@ -55,26 +55,24 @@
 ; #2.2 Обещаем вычислить потом, когда у нас попросят данные
 
 ; Решение которое обсуждали на сдаче 2.1 с работой на числах с плавающей точкой на массиве значений
-(defn lazy-integral-iterate [f b h]
-  (let [seq (map first (iterate (fn [[step_sum index]]
-                                  [(+ step_sum (trapezoid f (* h (- index 1)) (* h index))) (inc index)]) [0 1]))]
-    (fn []
-      (let [index
-            (int (/ b h))] (+
-                             (nth seq index)
-                             (trapezoid f (* h index) b))))))
-
-(defn lazy-integral-seq [f b h]
-  (letfn [(integral-seq [step-sum index]
-            (lazy-seq
-              (cons step-sum
-                    (integral-seq (+ step-sum (trapezoid f (* h (- index 1)) (* h index)))
-                                  (inc index)))))]
-    (let [seq (integral-seq 0 1)
-          index (int (/ b h))]
-      (fn [] (+ (nth seq index)
-                (trapezoid f (* h index) b))))))
-
+(defn lazy-integral-iterate [f h]
+  (let [seq
+        (map first
+             (iterate
+               (fn [[step_sum index]]
+                 [
+                  (+ step_sum (trapezoid f (* (dec index) h) (* index h)))
+                  (inc index)
+                  ]
+                 )
+               [0 1]))]
+    (fn [b]
+      (let [i (int (/ b h))] (+
+                               (nth seq i)
+                               (trapezoid f (* h i) b)))
+      )
+    )
+  )
 (defn -main [& args]
   (time (m-integral polynomial 0 50 0.5))
   (time (m-integral polynomial 0 50 0.5))
@@ -82,7 +80,7 @@
   (time (m-integral-array-external polynomial 50 0.5))
   (time (m-integral-array-external polynomial 50 0.5))
   (time (m-integral-array-external polynomial 60 0.5))
-  ;(println (take 1 (lazy-integral-iterate polynomial 50 0.5)))
-  ;(time (lazy-integral-seq polynomial 60 0.5))
-  ;(time (lazy-integral-seq polynomial 60 0.5))
+  (time ((lazy-integral-iterate polynomial 0.5) 50))
+  (time ((lazy-integral-iterate polynomial 0.5) 50))
+  (time ((lazy-integral-iterate polynomial 0.5) 60))
   )
