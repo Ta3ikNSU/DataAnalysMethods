@@ -37,6 +37,21 @@
         0)))
   )
 
+; Решение для шага с плавающей точкой
+(def m-integral-array-internal
+  (memoize
+    (fn [f h index]
+      (if (< 0 index)
+        (+
+          (trapezoid f (* (dec index) h) (* index h))
+          (m-integral-array-internal f h (- index 1)))
+        0)))
+  )
+
+(defn m-integral-array-external [f b h]
+  (m-integral-array-internal f h (/ b h))
+  )
+
 ; #2.2 Обещаем вычислить потом, когда у нас попросят данные
 
 ; Решение которое обсуждали на сдаче 2.1 с работой на числах с плавающей точкой на массиве значений
@@ -61,12 +76,13 @@
                 (trapezoid f (* h index) b))))))
 
 (defn -main [& args]
-  ;(time (m-integral polynomial -50 50 0.5))
-  ;(time (m-integral polynomial -50 50 0.5))
-  ;(time (m-integral polynomial -50 60 0.5))
-  (println (take 1 (lazy-integral-iterate polynomial 50 0.5)))
-  (time (lazy-integral-seq polynomial 60 0.5))
-  (time (lazy-integral-seq polynomial 60 0.5))
-
-
+  (time (m-integral polynomial 0 50 0.5))
+  (time (m-integral polynomial 0 50 0.5))
+  (time (m-integral polynomial 0 60 0.5))
+  (time (m-integral-array-external polynomial 50 0.5))
+  (time (m-integral-array-external polynomial 50 0.5))
+  (time (m-integral-array-external polynomial 60 0.5))
+  ;(println (take 1 (lazy-integral-iterate polynomial 50 0.5)))
+  ;(time (lazy-integral-seq polynomial 60 0.5))
+  ;(time (lazy-integral-seq polynomial 60 0.5))
   )
