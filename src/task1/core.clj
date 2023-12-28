@@ -1,4 +1,5 @@
-(ns task1.core)
+(ns task1.core
+  (:require [clojure.string :as s]))
 
 ; ----------------------------------------------------------------------------
 ; #1.1
@@ -73,28 +74,18 @@
   (reverse (reduce (fn [acc x] (if (pred x) (conj acc x) acc)) '() coll)))
 ; ----------------------------------------------------------------------------
 ; #1.4
-(defn concat-symbol-from-alphabet-to-word-recur-reduce-enabled
-  [base alphabet]
-  (my-filter some? (my-map #(append-char-if-not-last base %1) alphabet)))
+(defn add-char-to-string [string chars]
+  (my-map #(str string %1) (my-filter #(not (s/ends-with? string %1)) chars)))
 
-(defn concat-alphabet-to-all-words-recur-reduce-enabled
-  [result alphabet]
-  (reverse (reduce
-             #(into %1 (concat-symbol-from-alphabet-to-word-recur-reduce-enabled %2 alphabet))
-             `()
-             result)))
+(defn add-char [chars strings]
+  (reduce concat (map #(add-char-to-string %1 chars) strings)))
 
-(defn generate-sequences-recur-reduce-enabled
-  [alphabet length]
-  (if (empty? alphabet)
-    `()
-    (reduce
-      (fn [acc _]
-        (if (empty? acc)
-          alphabet
-          (concat-alphabet-to-all-words-recur-reduce-enabled acc alphabet)))
-      []
-      (range 0 length))))
+(defn generate-sequences-recur-reduce-enabled [chars n]
+  (cond
+    (<= n 0) '()
+    (= (count chars) 0) '()
+    (and (= (count chars) 1) (> n 1)) '()
+    :else (nth (iterate #(add-char chars %1) chars) (dec n))))
 
 (defn -main [& args]
   (println (generate-sequences-recur-reduce-enabled ["a", "b", "c"] 3)))
