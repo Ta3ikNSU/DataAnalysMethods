@@ -101,8 +101,6 @@
 
 (defn buildStringFromExpression
   [expression]
-  (println expression
-    )
   (cond
     (isCONSTANT? expression) (getConstantValue expression)
     (isVARIABLE? expression) (getVariableName expression)
