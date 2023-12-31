@@ -1,9 +1,11 @@
 (ns task4.core-test
   [:use task4.api_dnf]
   [:use task4.api_logic]
+  [:use task4.step_transformations]
   (:require [clojure.test :refer :all]))
 
 (deftest tests
+  "Преобразования"
   (testing
     (is (=
           (dnf (IMPLICATION
@@ -78,6 +80,57 @@
                    )
                  ))
           (OR (NOT (VARIABLE :x)) (VARIABLE :y) (VARIABLE :z))
+          ))
+    )
+  )
+
+
+(deftest tests
+  "Преобразование + подстановка"
+  (testing
+    (is (=
+          (dnf
+            (substitution (IMPLICATION
+                            (VARIABLE :x)
+                            (VARIABLE :y)
+                            ) (array-map :x 1))
+            )
+          (VARIABLE :y)
+          ))
+    )
+
+  (testing
+    (is (=
+          (dnf (substitution (IMPLICATION
+                 (CONSTANT 1)
+                 (VARIABLE :y)
+                 )(array-map :y 0)))
+          (CONSTANT 0)
+          ))
+    )
+
+  (testing
+    (is (=
+          (dnf
+            (substitution (IMPLICATION
+              (CONSTANT 1)
+              (IMPLICATION
+                (VARIABLE :x)
+                (VARIABLE :y)
+                ))(array-map :x 1)))
+          (VARIABLE :y)
+          ))
+    )
+
+  (testing
+    (is (=
+          (dnf (substitution (OR
+                 (VARIABLE :x)
+                 (OR
+                   (VARIABLE :y)
+                   (VARIABLE :z)
+                   ))(array-map :x 1)))
+          (CONSTANT 1)
           ))
     )
   )

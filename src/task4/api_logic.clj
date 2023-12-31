@@ -70,7 +70,7 @@
   [expression]
   (= (first expression) ::impl))
 
-(defn getType
+(defn get-type
   [expression]
   (keyword (first expression)))
 

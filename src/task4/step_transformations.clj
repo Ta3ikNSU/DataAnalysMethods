@@ -68,7 +68,7 @@
 (defn ^:private decompose
   [expression]
   (if (or (isOR? expression) (isAND? expression))
-    (cons (getType expression) (map #(decompose %) (combine-same-args expression)))
+    (cons (get-type expression) (map #(decompose %) (combine-same-args expression)))
     expression))
 
 (^:private decompose(AND (VARIABLE :x) (AND (VARIABLE :y) (VARIABLE :z))))
@@ -103,3 +103,16 @@
        :else expression)))
   ([expression const]
    (some #(and (isCONSTANT? %) (= const %)) (args expression))))
+
+
+;   Подстановка значений
+(defn substitution
+  [expr var-map]
+  (let [expr (identity-and-domination-laws expr)]
+    (cond
+      (isVARIABLE? expr) (let [var-name (first-arg expr)]
+                           (if (contains? var-map var-name)
+                             (CONSTANT (get var-map var-name))
+                             expr))
+      (isCONSTANT? expr) expr
+      :else (cons (get-type expr) (map #(substitution % var-map) (args expr))))))
